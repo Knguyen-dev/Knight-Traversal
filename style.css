@@ -1,0 +1,292 @@
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+ul,
+li,
+ol {
+    list-style: none;
+}
+fieldset {
+    border: none;
+}
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+label {
+    display: block;
+}
+
+img,
+picture,
+video {
+    max-width: 100%;
+}
+button {
+    cursor: pointer;
+    transition: var(--transition);
+    border-style: solid;
+    font-family: inherit;
+    color: inherit;
+}
+.content-hidden {
+    display: none;
+}
+
+:root {
+    --clr-dark-gray: #111827;
+    --clr-emerald: #10b981;
+    --clr-light-teal: #5eead4;
+    --clr-red: #b91c1c;
+    --font-1: "Roboto", sans-serif;
+    --font-2: "Open Sans", sans-serif;
+    --transition: all 0.25s ease-in-out;
+    --border-radius: 4px;
+    --letter-spacing: 4px;
+}
+
+body {
+    font-family: var(--font-1), var(--font-2);
+}
+
+#project-container {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    min-height: 100vh;
+}
+
+#project-header,
+#project-footer {
+    background-color: var(--clr-emerald);
+    color: black;
+    padding: 20px 8px;
+}
+
+/* Header styling */
+#project-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    row-gap: 12px;
+    text-align: center;
+}
+
+.header-nav {
+    height: 0;
+    overflow: hidden;
+    transition: var(--transition);
+}
+
+.header-nav-links {
+    display: flex;
+    flex-direction: column;
+    row-gap: 4px;
+    /* 
+	NOTE: On bigger screens you may discard this idea of having the menu in vertical form, so you
+	may need to use something like height: auto !important, but hold off for right now
+	*/
+}
+
+#project-header a,
+#project-header button {
+    font-size: 1.2em;
+}
+#project-header a {
+    border-bottom: 2px solid transparent;
+}
+#project-header button {
+    border: none;
+    border-bottom: 2px solid transparent;
+    background-color: transparent;
+}
+#project-header a:hover,
+#project-header button:hover {
+    border-color: black;
+}
+
+/* Styling for main-content */
+#project-main-content {
+    background-color: var(--clr-light-teal);
+    padding: 20px 8px;
+    display: grid;
+    grid-template-rows: auto;
+    display: grid;
+    grid-template-rows: auto;
+    row-gap: 24px;
+}
+
+.main-header {
+    display: grid;
+    grid-template-rows: repeat(2, auto);
+    justify-content: center;
+    align-items: center;
+    row-gap: 24px;
+    text-align: center;
+}
+
+.chess-form-container {
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    max-width: fit-content;
+    margin: 0 auto;
+    padding: 16px 12px;
+    border-radius: var(--border-radius);
+    font-weight: 700;
+}
+
+#chess-position-form {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    row-gap: 16px;
+}
+
+#chess-position-form fieldset {
+    display: flex;
+    flex-direction: column;
+    row-gap: 4px;
+}
+#chess-position-form input {
+    display: block;
+    padding: 4px;
+    border-style: solid;
+    width: 100%;
+}
+.field-error-el {
+    background-color: var(--clr-red);
+    color: white;
+    padding: 4px;
+    border-radius: var(--border-radius);
+}
+
+#submit-chess-form-btn {
+    align-self: center;
+    width: 70%;
+    padding: 8px 0;
+    background-color: transparent;
+    border: 2px solid black;
+    font-weight: inherit;
+}
+#submit-chess-form-btn:hover {
+    background-color: black;
+    color: var(--clr-light-teal);
+}
+
+.positions-output-section {
+    border-radius: var(--border-radius);
+    padding: 12px;
+    background-color: white;
+    height: 125px;
+    overflow-y: scroll;
+}
+
+.positions-list {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    row-gap: 8px;
+}
+.path-position-btn {
+    padding: 4px;
+    border-radius: 4px;
+    border: 2px solid black;
+    font-weight: 700;
+    transition: var(--transition);
+    cursor: pointer;
+}
+.path-position-btn:hover {
+    background-color: black;
+    color: white;
+}
+
+/* And then some data-active class */
+.path-position-btn[data-active="true"] {
+    background-color: black;
+    color: white;
+}
+
+/* 
+- Set a max-width, and make sure width is always 100%. This allows for the grid 
+to be able to shrink and be somewhat responsive. Aspect ratio keeps the grid 
+a square.
+
+*/
+.chessboard-grid {
+    max-width: 500px;
+    width: 100%;
+    aspect-ratio: 1;
+    border: 3px solid black;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    margin: 0 auto;
+}
+
+.chess-square {
+    aspect-ratio: 1;
+    font-size: 2em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--clr-emerald);
+    position: relative;
+    border: 3px solid transparent;
+    background-color: var(--clr-light-teal);
+    transition: var(--transition);
+    /* Helps when shrinking */
+    overflow: hidden;
+}
+.chess-square:hover {
+    border-color: black;
+}
+.chess-square.dark-square {
+    background-color: var(--clr-emerald);
+}
+
+.chess-square-label {
+    position: absolute;
+    font-size: 0.5em;
+    opacity: 0.8;
+}
+
+.chess-square-label.row-label {
+    top: 0;
+    left: 0;
+}
+.chess-square-label.column-label {
+    bottom: 0;
+    right: 0;
+}
+
+.chess-piece {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#project-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+.footer-nav-links-container {
+    margin-top: 6px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 
+- Book mark: Research about how to draw lines between the divs on the 
+thing. Then After I think we should generate the html with javascript. 
+Also be sure to make a copy of the html so that we can easily do styling 
+on another tab.
+
+
+
+*/
