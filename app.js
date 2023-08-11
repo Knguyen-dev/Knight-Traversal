@@ -1,5 +1,5 @@
-import { loadPage } from "./rendering.js";
+import { loadEventListeners } from "./eventlisteners.js";
 
 window.addEventListener("DOMContentLoaded", () => {
-    loadPage();
+    loadEventListeners();
 });

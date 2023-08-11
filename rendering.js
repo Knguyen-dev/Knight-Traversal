@@ -1,20 +1,10 @@
-import {
-    hideChessFormErrors,
-    hideEndPositionErrors,
-    hideStartPositionErrors,
-    inputPositionsMatch,
-    isValidChessForm,
-    resetChessForm,
-    showEndPositionErrors,
-    showStartPositionErrors,
-} from "./error.js";
-import { DomModule } from "./modules.js";
+import { DomModule, statesModule } from "./modules.js";
 
+// Toggles and renders the drop down menu
 function toggleHeaderDropDown() {
     // Get the heights of the links and their container
     const linksHeight = DomModule.headerNavLinks.getBoundingClientRect().height;
     const containerHeight = DomModule.headerNav.getBoundingClientRect().height;
-
     // If container has no height (links are hidden), then show links
     if (containerHeight === 0) {
         DomModule.dropDownBtn.textContent = "Hide Menu";
@@ -26,69 +16,77 @@ function toggleHeaderDropDown() {
     }
 }
 
-function createEventListeners() {
-    // Set up listener for toggling button
-    if (DomModule.headerNav.getBoundingClientRect().height === 0) {
-        DomModule.dropDownBtn.textContent = "Show Menu";
-    } else {
-        DomModule.dropDownBtn.textContent = "Hide Menu";
+// Updates dimensions and scaling of chess canvas so it draws correctly even on resize
+function updateCanvas() {
+    DomModule.canvas.width = DomModule.canvas.offsetWidth;
+    DomModule.canvas.height = DomModule.canvas.offsetHeight;
+    DomModule.canvasContext.scale(
+        DomModule.canvas.width / DomModule.chessBoardGrid.offsetWidth,
+        DomModule.canvas.height / DomModule.chessBoardGrid.offsetHeight
+    );
+}
+
+function resetCanvas() {
+    DomModule.canvasContext.clearRect(
+        0,
+        0,
+        DomModule.canvas.width,
+        DomModule.canvas.height
+    );
+}
+
+// Draws a dot at an (x, y) coordinate
+function drawDot(xPos, yPos) {
+    const dotRadius = 2;
+    DomModule.canvasContext.beginPath();
+    DomModule.canvasContext.arc(xPos, yPos, dotRadius, 0, Math.PI * 2);
+    DomModule.canvasContext.fill();
+}
+
+// Draws a line from the current pen location to a new one
+function drawLine(xPos, yPos) {
+    DomModule.canvasContext.lineTo(xPos, yPos);
+    DomModule.canvasContext.stroke();
+}
+
+// Renders the chess board
+function renderKnightPath() {
+    // Get array of x-y coordinates in form [xIndex ,yIndex]
+    const knightPath = statesModule.board.knightMovesHelper(
+        statesModule.startPos,
+        statesModule.endPos
+    );
+
+    // Get an array of the corresponding square elements that match the x and y index (position) values.
+    const squaresArr = knightPath.map((pos) => {
+        return document.querySelector(
+            `.chess-square[data-x-index="${pos[0]}"][data-y-index="${pos[1]}"]`
+        );
+    });
+
+    // Update the canvas to adjust to the user's screen size before drawing
+    updateCanvas();
+    // Reset or clear canvas of previous drawings
+    resetCanvas();
+    DomModule.canvasContext.beginPath();
+
+    // Draw the path
+    for (let i = 0; i < squaresArr.length; i++) {
+        // Calculate num pixels to be positioned away from left side of board
+        const xPos = squaresArr[i].offsetLeft + squaresArr[i].offsetWidth / 2;
+        // Calculate num pixels to be positioned away from top of board
+        const yPos = squaresArr[i].offsetTop + squaresArr[i].offsetHeight / 2;
+
+        // If it's the starting square, move pen to starting square
+        if (i == 0) {
+            DomModule.canvasContext.moveTo(xPos, yPos);
+            drawDot(xPos, yPos);
+        } else {
+            // Else, it's a middle or ending square
+            drawLine(xPos, yPos);
+            drawDot(xPos, yPos);
+        }
     }
-    DomModule.dropDownBtn.addEventListener("click", toggleHeaderDropDown);
-
-    // Create event listener for start position input
-    DomModule.startPositionInput.addEventListener("input", (e) => {
-        // Check if it's a chess position
-        if (DomModule.startPositionInput.validity.valid) {
-            hideStartPositionErrors();
-        } else {
-            showStartPositionErrors();
-        }
-        // Then check if both of their inputted chess positions matched,
-        // if so, we'll show an error on the 'end-position' side
-        if (inputPositionsMatch()) {
-            showEndPositionErrors();
-        } else {
-            hideEndPositionErrors();
-        }
-    });
-
-    // Event listener for end position input
-    DomModule.endPositionInput.addEventListener("input", (e) => {
-        /*
-		- If either it doesn't meet constraints or the input positions match,
-		 	then we show an error. NOTE: Since both errors affect
-			the same element, if both errors occur it'll
-			prioritize telling that the chess move was incorrect .
-		*/
-        if (
-            !DomModule.endPositionInput.validity.valid ||
-            inputPositionsMatch()
-        ) {
-            showEndPositionErrors();
-        } else {
-            hideEndPositionErrors();
-        }
-    });
-
-    // Event listener for the form itself
-    DomModule.chessPositionForm.addEventListener("submit", (e) => {
-        e.preventDefault();
-
-        // Check if the form is valid on submission
-
-        if (isValidChessForm(e)) {
-            console.log("Valid form submission!");
-            hideChessFormErrors();
-            resetChessForm();
-        } else {
-            console.log("Invalid form submission detected");
-        }
-    });
 }
 
-// Function for loading the page
-function loadPage() {
-    createEventListeners();
-}
-
-export { loadPage };
+export { renderKnightPath, toggleHeaderDropDown };

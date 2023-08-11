@@ -57,28 +57,6 @@ function isValidChessForm(e) {
     return true;
 }
 
-// Shows all potential errors with the chess position form
-function showChessFormErrors() {
-    // Check errors in the start position
-    if (DomModule.startPositionInput.validity.valid) {
-        hideStartPositionErrors();
-    } else {
-        showStartPositionErrors();
-    }
-    // Check errors in the end position
-    if (DomModule.endPositionInput.validity.valid) {
-        hideEndPositionErrors();
-    } else {
-        showEndPositionErrors();
-    }
-    // Check both to see if they match (which is an error)
-    if (!inputPositionsMatch()) {
-        hideEndPositionErrors;
-    } else {
-        showEndPositionErrors;
-    }
-}
-
 // hides all error elements in chess position form
 function hideChessFormErrors() {
     DomModule.formErrorElements.forEach((errorEl) => {
