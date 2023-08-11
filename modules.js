@@ -1,31 +1,5 @@
-import { Board } from "./board.js";
+import { Board, convertArrayNotation } from "./board.js";
 import { createInitialPage } from "./initialPage.js";
-
-/*
-- On:renderChessBoard: function with the form. My idea 
-	is that in the statesModule we'd record the x-y coordinates of the 
-	first and second moves. Then when this function is called, we 
-	look at the values of the first and second moves from that statesModule
-	and then we do the math and add our class, etc. more code. Rather than
-	iterating through the board itself, we use our 'path' list, and iterate
-	through that list. We know the .children matches the indices, I think
-	we can just index like normal. 
-	
-
-	- board class: Going to import the board class, rather than creating
-		a class instance everytime we'd probably put it in the 
-		statesModule.
-
-
-	Form: On our form we'd likely accept and record the coordinate values to 
-	the statesModule, obviously after converting their notation, which would be a separate function.
-	And then obviously the form submits and we run the render function
-
-	Board squares event listeners: When a square is clicked 
-	
-
-
-*/
 
 const statesModule = {
     /*
@@ -36,6 +10,10 @@ const statesModule = {
     endPos: [7, 7],
     // Board class instance that we use to make those calculations
     board: new Board(),
+
+    // boolean deciding if the menu is collapsed or not on the drop down on
+    // smaller screens
+    menuCollapsed: true,
 };
 
 const DomModule = (() => {
@@ -43,12 +21,19 @@ const DomModule = (() => {
     const page = createInitialPage();
     document.body.appendChild(page);
 
-    // Get the form and input elements
+    /*
+	- Get the form and input elements. Then fill out the input elements with the default starting and ending positions, 
+		which helps contribute to how the site will render a default knight's path when a user loads in. It's to demonstrate 
+		how the program works.
+	*/
     const chessPositionForm = document.querySelector("#chess-position-form");
     const startPositionInput = document.querySelector(
         "#input-start-position-el"
     );
+    startPositionInput.value = convertArrayNotation(statesModule.startPos);
     const endPositionInput = document.querySelector("#input-end-position-el");
+    endPositionInput.value = convertArrayNotation(statesModule.endPos);
+
     // Get the error elements
     const startPositionErrorEl = document.querySelector(
         "#start-position-error-el"
@@ -56,12 +41,13 @@ const DomModule = (() => {
     const endPositionErrorEl = document.querySelector("#end-position-error-el");
     const formErrorElements = document.querySelectorAll(".field-error-el");
 
+    // Get the drop down button for smaller screens and make sure it has appropriate text
     const dropDownBtn = document.querySelector("#header-drop-down-btn");
+
     const headerNav = document.querySelector(".header-nav");
     const headerNavLinks = document.querySelector(".header-nav-links");
 
     const chessBoardGrid = document.querySelector(".chessboard-grid");
-    const boardSquares = chessBoardGrid.children;
 
     const canvas = document.querySelector(".chess-canvas");
     const canvasContext = canvas.getContext("2d");
@@ -78,7 +64,6 @@ const DomModule = (() => {
         headerNav,
         headerNavLinks,
         chessBoardGrid,
-        boardSquares,
         canvas,
         canvasContext,
     };

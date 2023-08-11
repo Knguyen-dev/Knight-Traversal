@@ -97,17 +97,14 @@ function createProjectHeader() {
     const extraBtnsDiv = document.createElement("div");
     extraBtnsDiv.className = "extra-btns-section";
 
-    const toggleThemeBtn = document.createElement("button");
-    toggleThemeBtn.id = "toggle-theme-btn";
-
     const headerDropDownBtn = document.createElement("button");
     headerDropDownBtn.id = "header-drop-down-btn";
 
     const headerLinks = {
         // text for link : id of element its linked to
-        Home: "project-header",
-        About: "about-section",
-        "Other Projects": "other-projects-section",
+        Home: "#",
+        About: "#",
+        "Other Projects": "#",
     };
     const headerNav = document.createElement("nav");
     headerNav.className = "header-nav";
@@ -125,7 +122,6 @@ function createProjectHeader() {
     }
 
     siteInfoDiv.appendChild(siteNameEl);
-    extraBtnsDiv.appendChild(toggleThemeBtn);
     extraBtnsDiv.appendChild(headerDropDownBtn);
     headerNav.appendChild(linksList);
     header.appendChild(siteInfoDiv);
@@ -177,9 +173,7 @@ function createProjectFooter() {
     footerInfoEl.innerHTML = `Knguyen <span class="current-year-el">${new Date().getFullYear()}</span>`;
 
     const footerLinks = {
-        "Project Github": "https://github.com/",
-        "Other Link 1": "https://github.com/",
-        "Other Link 2": "https://github.com/",
+        "Project Github": "https://github.com/Knguyen-dev/Knight-Traversal.git",
     };
     const footerNav = document.createElement("nav");
     footerNav.className = "footer-nav";

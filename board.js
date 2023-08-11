@@ -150,4 +150,16 @@ function convertBoardNotation(positionStr) {
     return [xIndex, yIndex];
 }
 
-export { Board, convertBoardNotation };
+// Converts an array of indices in form [x, y] into a string in "[A-H][1-8]", which we'll refer to as board notation
+function convertArrayNotation(pos) {
+    const xPositions = ["A", "B", "C", "D", "E", "F", "G", "H"];
+    // Find the corresponding row letter to the x index
+    let x = xPositions[pos[0]];
+    // Increment the index value to properly represent a row number
+    // rather than a row-index.
+    let y = pos[1] + 1;
+    // return the concatenated string in form [letter][number]
+    return x + y;
+}
+
+export { Board, convertBoardNotation, convertArrayNotation };

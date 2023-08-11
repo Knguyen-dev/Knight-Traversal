@@ -1,19 +1,24 @@
 import { DomModule, statesModule } from "./modules.js";
 
-// Toggles and renders the drop down menu
-function toggleHeaderDropDown() {
-    // Get the heights of the links and their container
-    const linksHeight = DomModule.headerNavLinks.getBoundingClientRect().height;
-    const containerHeight = DomModule.headerNav.getBoundingClientRect().height;
-    // If container has no height (links are hidden), then show links
-    if (containerHeight === 0) {
-        DomModule.dropDownBtn.textContent = "Hide Menu";
-        DomModule.headerNav.style.height = `${linksHeight}px`;
-    } else {
-        // Else container has height (links are visible), so hide them
+// Renders the header nav and either hides or shows the nav items based on a boolean
+function renderHeaderNav() {
+    if (statesModule.menuCollapsed) {
         DomModule.dropDownBtn.textContent = "Show Menu";
-        DomModule.headerNav.style.height = 0;
+        DomModule.headerNav.style.height = "0px";
+    } else {
+        DomModule.dropDownBtn.textContent = "Hide Menu";
+        DomModule.headerNav.style.height = "auto";
     }
+}
+
+// Toggles and renders the drop down menu
+function toggleHeaderNav() {
+    if (statesModule.menuCollapsed) {
+        statesModule.menuCollapsed = false;
+    } else {
+        statesModule.menuCollapsed = true;
+    }
+    renderHeaderNav();
 }
 
 // Updates dimensions and scaling of chess canvas so it draws correctly even on resize
@@ -26,6 +31,7 @@ function updateCanvas() {
     );
 }
 
+// Clears the canvas of any previous line paths
 function resetCanvas() {
     DomModule.canvasContext.clearRect(
         0,
@@ -89,4 +95,4 @@ function renderKnightPath() {
     }
 }
 
-export { renderKnightPath, toggleHeaderDropDown };
+export { renderKnightPath, toggleHeaderNav, renderHeaderNav };
