@@ -14,10 +14,13 @@ const statesModule = {
     // boolean deciding if the menu is collapsed or not on the drop down on
     // smaller screens
     menuCollapsed: true,
+
+    // If true, overwrite the input value for the start position, else overwrite the end position input
+    overwriteStartInput: true,
 };
 
 const DomModule = (() => {
-    // Create and put page onto the screen
+    // Create and load page onto the screen
     const page = createInitialPage();
     document.body.appendChild(page);
 
@@ -48,7 +51,9 @@ const DomModule = (() => {
     const headerNavLinks = document.querySelector(".header-nav-links");
 
     const chessBoardGrid = document.querySelector(".chessboard-grid");
+    const boardSquares = document.querySelectorAll(".chess-square");
 
+    // console.log(boardSquares);
     const canvas = document.querySelector(".chess-canvas");
     const canvasContext = canvas.getContext("2d");
     canvasContext.strokeStyle = "black"; // Set line color
@@ -64,6 +69,7 @@ const DomModule = (() => {
         headerNav,
         headerNavLinks,
         chessBoardGrid,
+        boardSquares,
         canvas,
         canvasContext,
     };

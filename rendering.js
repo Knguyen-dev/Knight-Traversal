@@ -11,14 +11,69 @@ function renderHeaderNav() {
     }
 }
 
-// Toggles and renders the drop down menu
-function toggleHeaderNav() {
-    if (statesModule.menuCollapsed) {
-        statesModule.menuCollapsed = false;
-    } else {
-        statesModule.menuCollapsed = true;
+/*
+- Shows errors at the start position. The only error
+	that will be shown is when the input isn't a chess position
+*/
+function showStartPositionErrors() {
+    if (DomModule.startPositionInput.validity.patternMismatch) {
+        DomModule.startPositionErrorEl.textContent =
+            "Must be a chess coordinate e.g. 'a4'!";
     }
-    renderHeaderNav();
+    DomModule.startPositionErrorEl.classList.remove("content-hidden");
+}
+
+function hideStartPositionErrors() {
+    DomModule.startPositionErrorEl.classList.add("content-hidden");
+}
+
+/*
+- Shows errors at the end position. Here either, we will
+	show that the input isn't a chess position, or either 
+	the input for the start and end position were the same
+*/
+function showEndPositionErrors() {
+    if (DomModule.endPositionInput.validity.patternMismatch) {
+        DomModule.endPositionErrorEl.textContent =
+            "Must be a chess coordinate e.g. 'a4'!";
+    } else if (inputPositionsMatch()) {
+        DomModule.endPositionErrorEl.textContent =
+            "You gotta have different start and end positions!";
+    }
+    DomModule.endPositionErrorEl.classList.remove("content-hidden");
+}
+
+function hideEndPositionErrors() {
+    DomModule.endPositionErrorEl.classList.add("content-hidden");
+}
+
+// Check if the input for the positions matched
+function inputPositionsMatch() {
+    const startPos = DomModule.startPositionInput.value;
+    const endPos = DomModule.endPositionInput.value;
+    return startPos == endPos;
+}
+
+// Validates the chess position form
+function isValidChessForm(e) {
+    // Check if it passes basic rules and checks for fields,
+    // which would be if they entered real chess positions
+    if (!e.currentTarget.checkValidity()) {
+        return false;
+    }
+    // If the input positions match, then it's invalid form
+    if (inputPositionsMatch()) {
+        return false;
+    }
+    // Else, both conditions are met and we have a good form
+    return true;
+}
+
+// hides all error elements in chess position form
+function hideChessFormErrors() {
+    DomModule.formErrorElements.forEach((errorEl) => {
+        errorEl.classList.add("content-hidden");
+    });
 }
 
 // Updates dimensions and scaling of chess canvas so it draws correctly even on resize
@@ -32,7 +87,7 @@ function updateCanvas() {
 }
 
 // Clears the canvas of any previous line paths
-function resetCanvas() {
+function resetBoard() {
     DomModule.canvasContext.clearRect(
         0,
         0,
@@ -73,7 +128,7 @@ function renderKnightPath() {
     // Update the canvas to adjust to the user's screen size before drawing
     updateCanvas();
     // Reset or clear canvas of previous drawings
-    resetCanvas();
+    resetBoard();
     DomModule.canvasContext.beginPath();
 
     // Draw the path
@@ -83,7 +138,7 @@ function renderKnightPath() {
         // Calculate num pixels to be positioned away from top of board
         const yPos = squaresArr[i].offsetTop + squaresArr[i].offsetHeight / 2;
 
-        // If it's the starting square, move pen to starting square
+        // If it's the starting square, move pen to starting square and highlight the square
         if (i == 0) {
             DomModule.canvasContext.moveTo(xPos, yPos);
             drawDot(xPos, yPos);
@@ -95,4 +150,51 @@ function renderKnightPath() {
     }
 }
 
-export { renderKnightPath, toggleHeaderNav, renderHeaderNav };
+// render the highlighted squares
+function renderHighlightedSquares() {
+    // Loop through all squares,
+    DomModule.boardSquares.forEach((sqr) => {
+        const xPos = parseInt(sqr.dataset.xIndex);
+        const yPos = parseInt(sqr.dataset.yIndex);
+        if (
+            statesModule.startPos[0] == xPos &&
+            statesModule.startPos[1] == yPos
+        ) {
+            sqr.setAttribute("data-active", true);
+        } else if (
+            statesModule.endPos[0] == xPos &&
+            statesModule.endPos[1] == yPos
+        ) {
+            sqr.setAttribute("data-active", true);
+        } else {
+            // Else, it's an unrelated square, so make sure it doesn't have data-active
+            sqr.removeAttribute("data-active");
+        }
+    });
+}
+
+// Calls function to render the path and squares on the chess board
+function renderBoard() {
+    renderKnightPath();
+    renderHighlightedSquares();
+}
+
+// Renders initial state of the page
+function renderInitialPage() {
+    renderHeaderNav(); // render the header whether it's collapsed or not
+    renderBoard();
+}
+
+export {
+    renderHeaderNav,
+    showStartPositionErrors,
+    hideStartPositionErrors,
+    showEndPositionErrors,
+    hideEndPositionErrors,
+    inputPositionsMatch,
+    isValidChessForm,
+    hideChessFormErrors,
+    renderHighlightedSquares,
+    renderBoard,
+    renderInitialPage,
+};

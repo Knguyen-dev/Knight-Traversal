@@ -179,6 +179,12 @@ a square.
     position: absolute;
     width: 100%;
     height: 100%;
+
+    /* 
+	- Allows us to interact with chessboard-grid even when the chess-canvas
+	is above it
+	*/
+    pointer-events: none;
 }
 
 .chessboard-grid {
@@ -205,6 +211,13 @@ a square.
     transition: var(--transition);
     /* Helps when shrinking */
     overflow: hidden;
+}
+
+.chess-square:hover {
+    border-color: black;
+}
+.chess-square[data-active="true"] {
+    border-color: black;
 }
 
 .chess-square.dark-square {
